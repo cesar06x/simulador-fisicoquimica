@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Fisicoquímica</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f2f5; 
+            color: #1a1a1a; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 800px; 
+            margin: auto; 
+            background: #ffffff; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08); 
+        }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
+        h2 { color: #34495e; margin-top: 30px; }
+        h3 { color: #2c3e50; margin-top: 0; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+        }
+        .form-group { 
+            display: flex; 
+            flex-direction: column; 
+        }
+        label { 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            color: #34495e;
+        }
+        input, select, button { 
+            padding: 12px; 
+            border: 1px solid #bdc3c7; 
+            border-radius: 6px; 
+            font-size: 15px; 
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        button { 
+            background-color: #3498db; 
+            color: white; 
+            cursor: pointer; 
+            border: none; 
+            font-weight: bold; 
+            transition: background-color 0.3s;
+        }
+        button:hover { background-color: #2980b9; }
+        .btn-reset { background-color: #e74c3c; }
+        .btn-reset:hover { background-color: #c0392b; }
+        .btn-export { background-color: #27ae60; margin-top: 15px; width: 100%; }
+        .btn-export:hover { background-color: #2ecc71; }
+        .btn-full { width: 100%; margin-top: 15px; }
+        .results { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 6px; 
+            border-left: 4px solid #3498db;
+        }
+        .hidden { display: none; }
+        hr { border: 0; border-top: 1px solid #ecf0f1; margin: 40px 0; }
+        
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; max-width: 100%; }
+            button, select { display: none; }
+            input { border: none; background: transparent; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de Fisicoquímica</h1>
+        
+        <h2>Simulación Isotérmica</h2>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="inputType">Tipo de Entrada:</label>
+            <select id="inputType" onchange="toggleInputs()">
+                <option value="pressure">Presiones</option>
+                <option value="volume">Volúmenes</option>
+            </select>
+        </div>
+        
+        <div class="grid" id="pressureInputs">
+            <div class="form-group">
+                <label for="p1">Presión Inicial (atm):</label>
+                <input type="number" id="p1" step="any">
+            </div>
+            <div class="form-group">
+                <label for="p2">Presión Final (atm):</label>
+                <input type="number" id="p2" step="any">
+            </div>
+        </div>
+        
+        <div class="grid hidden" id="volumeInputs">
+            <div class="form-group">
+                <label for="v1">Volumen Inicial (L):</label>
+                <input type="number" id="v1" step="any">
+            </div>
+            <div class="form-group">
+                <label for="v2">Volumen Final (L):</label>
+                <input type="number" id="v2" step="any">
+            </div>
+        </div>
+
+        <div class="grid" style="margin-top: 20px;">
+            <div class="form-group">
+                <label for="moles">Moles (n):</label>
+                <input type="number" id="moles" step="any">
+            </div>
+            <div class="form-group">
+                <label for="temp">Temperatura (K):</label>
+                <input type="number" id="temp" step="any">
+            </div>
+        </div>
+        
+        <div class="grid" style="margin-top: 20px;">
+            <button onclick="simulateIsothermal()">Simular Isotérmico</button>
+            <button onclick="resetForms()" class="btn-reset">Reiniciar Valores</button>
+        </div>
+
+        <div class="grid" style="margin-top: 20px;">
+            <div class="results" id="resRevIso">
+                <h3>Resultados Reversibles</h3>
+                <div id="outRevIso">Esperando simulación...</div>
+            </div>
+            <div class="results" id="resIrrIso">
+                <h3>Resultados Irreversibles</h3>
+                <div id="outIrrIso">Esperando simulación...</div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Simulación Adiabática</h2>
+        <div class="grid">
+            <div class="form-group">
+                <label for="gasType">Tipo de Gas:</label>
+                <select id="gasType" onchange="updateGamma()">
+                    <option value="1.67">Monoatómico (γ=1.67)</option>
+                    <option value="1.40">Diatómico (γ=1.40)</option>
+                    <option value="custom">Personalizado</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="gamma">γ (Gamma):</label>
+                <input type="number" id="gamma" value="1.67" step="any" disabled>
+            </div>
+        </div>
+        <button onclick="simulateAdiabatic()" class="btn-full">Simular Adiabático</button>
+        
+        <div class="results" style="margin-top: 20px;">
+            <h3>Resultados Adiabáticos</h3>
+            <div id="outAdia">Esperando simulación...</div>
+        </div>
+        
+        <hr>
+        
+        <h2>Exportar Reporte</h2>
+        <div class="form-group">
+            <label for="studentName">Nombre del estudiante:</label>
+            <input type="text" id="studentName" placeholder="Ingresa tu nombre">
+        </div>
+        <button onclick="window.print()" class="btn-export">Guardar como PDF</button>
+    </div>
+
+    <script>
+        const R_ATM = 0.08206; 
+        const R_JOULES = 8.314; 
+        
+        function toggleInputs() {
+            const currentInputType = document.getElementById('inputType').value;
+            const pressureContainer = document.getElementById('pressureInputs');
+            const volumeContainer = document.getElementById('volumeInputs');
+            
+            if (currentInputType === 'pressure') {
+                pressureContainer.classList.remove('hidden');
+                volumeContainer.classList.add('hidden');
+            } else {
+                pressureContainer.classList.add('hidden');
+                volumeContainer.classList.remove('hidden');
+            }
+            console.log("Input type toggled to: " + currentInputType);
+        }
+        
+        function updateGamma() {
+            const selectedGasType = document.getElementById('gasType').value;
+            const gammaField = document.getElementById('gamma');
+            
+            if (selectedGasType === 'custom') {
+                gammaField.value = '';
+                gammaField.disabled = false;
+                gammaField.focus();
+            } else {
+                gammaField.value = selectedGasType;
+                gammaField.disabled = true;
+            }
+        }
+        
+        function getFormValues() {
+            return {
+                type: document.getElementById('inputType').value,
+                pInitial: parseFloat(document.getElementById('p1').value),
+                pFinal: parseFloat(document.getElementById('p2').value),
+                vInitial: parseFloat(document.getElementById('v1').value),
+                vFinal: parseFloat(document.getElementById('v2').value),
+                nMoles: parseFloat(document.getElementById('moles').value),
+                temperature: parseFloat(document.getElementById('temp').value),
+                gammaValue: parseFloat(document.getElementById('gamma').value)
+            };
+        }
+        
+        function simulateIsothermal() {
+            const data = getFormValues();
+            
+            if (isNaN(data.nMoles) || isNaN(data.temperature)) {
+                console.error("Validation error: Moles or temperature missing.");
+                return;
+            }
+            
+            let v1 = data.vInitial;
+            let v2 = data.vFinal;
+            let p1 = data.pInitial;
+            let p2 = data.pFinal;
+            
+            if (data.type === 'pressure') {
+                if (isNaN(p1) || isNaN(p2)) {
+                    console.error("Validation error: Pressure values missing.");
+                    return;
+                }
+                v1 = (data.nMoles * R_ATM * data.temperature) / p1;
+                v2 = (data.nMoles * R_ATM * data.temperature) / p2;
+            } else {
+                if (isNaN(v1) || isNaN(v2)) {
+                    console.error("Validation error: Volume values missing.");
+                    return;
+                }
+                p1 = (data.nMoles * R_ATM * data.temperature) / v1;
+                p2 = (data.nMoles * R_ATM * data.temperature) / v2;
+            }
+            
+            const workReversible = -data.nMoles * R_JOULES * data.temperature * Math.log(v2 / v1);
+            const heatReversible = -workReversible;
+            
+            const externalPressurePa = p2 * 101325; 
+            const volumeInitialM3 = v1 / 1000;
+            const volumeFinalM3 = v2 / 1000;
+            const workIrreversible = -externalPressurePa * (volumeFinalM3 - volumeInitialM3);
+            const heatIrreversible = -workIrreversible;
+            
+            document.getElementById('outRevIso').innerHTML = `
+                <p>Trabajo (W): ${workReversible.toFixed(2)} J</p>
+                <p>Calor (Q): ${heatReversible.toFixed(2)} J</p>
+                <p>Energía Interna (ΔU): 0.00 J</p>
+            `;
+            
+            document.getElementById('outIrrIso').innerHTML = `
+                <p>Trabajo (W): ${workIrreversible.toFixed(2)} J</p>
+                <p>Calor (Q): ${heatIrreversible.toFixed(2)} J</p>
+                <p>Energía Interna (ΔU): 0.00 J</p>
+            `;
+            console.log("Isothermal simulation executed successfully.");
+        }
+        
+        function simulateAdiabatic() {
+            const data = getFormValues();
+            
+            if (isNaN(data.nMoles) || isNaN(data.temperature) || isNaN(data.gammaValue)) {
+                console.error("Validation error: Required values for adiabatic process missing.");
+                return;
+            }
+            
+            let finalTemperature = 0;
+            
+            if (data.type === 'pressure') {
+                if (isNaN(data.pInitial) || isNaN(data.pFinal)) return;
+                finalTemperature = data.temperature * Math.pow((data.pInitial / data.pFinal), (1 - data.gammaValue) / data.gammaValue);
+            } else {
+                if (isNaN(data.vInitial) || isNaN(data.vFinal)) return;
+                finalTemperature = data.temperature * Math.pow((data.vInitial / data.vFinal), data.gammaValue - 1);
+            }
+            
+            const heatCapacityV = R_JOULES / (data.gammaValue - 1);
+            const deltaInternalEnergy = data.nMoles * heatCapacityV * (finalTemperature - data.temperature);
+            const workAdiabatic = deltaInternalEnergy; 
+            
+            document.getElementById('outAdia').innerHTML = `
+                <p>Temperatura Final (T2): ${finalTemperature.toFixed(2)} K</p>
+                <p>Trabajo (W): ${workAdiabatic.toFixed(2)} J</p>
+                <p>Calor (Q): 0.00 J</p>
+                <p>Energía Interna (ΔU): ${deltaInternalEnergy.toFixed(2)} J</p>
+            `;
+            console.log("Adiabatic simulation executed successfully.");
+        }
+        
+        function resetForms() {
+            document.querySelectorAll('input').forEach(input => {
+                if(input.id !== 'gamma') input.value = '';
+            });
+            document.getElementById('outRevIso').innerText = 'Esperando simulación...';
+            document.getElementById('outIrrIso').innerText = 'Esperando simulación...';
+            document.getElementById('outAdia').innerText = 'Esperando simulación...';
+            
+            const gasDropdown = document.getElementById('gasType');
+            gasDropdown.value = '1.67';
+            updateGamma();
+            console.log("All forms reset.");
+        }
+    </script>
+</body>
+</html>
