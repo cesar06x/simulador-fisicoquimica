@@ -18,7 +18,6 @@
       --primary-color: #1b365d;
       --secondary-color: #3498db;
       --accent-color: #27ae60;
-      --warning-color: #e67e22;
       --bg-light: #f4f7f6;
       --text-dark: #2c3e50;
       --card-bg: #ffffff;
@@ -195,7 +194,7 @@
     canvas { width: 100% !important; height: 100% !important; }
 
     /* =========================================
-        PDF AND EMAIL EXPORT SECTION
+        PDF EXPORT SECTION
         ========================================= */
     .export-section { 
       background: #e8f4fc; 
@@ -490,19 +489,14 @@
     </div>
 
     <div class="export-section">
-      <div style="flex: 1; margin-bottom: 10px;">
-        <h3 style="color: var(--primary-color); margin-bottom: 5px;">Guardar y Enviar Resultados</h3>
-        <p style="font-size: 14px; color: #555;">Descarga un reporte en PDF o envía los resultados de la simulación activa por correo electrónico.</p>
+      <div style="flex: 1;">
+        <h3 style="color: var(--primary-color); margin-bottom: 5px;">Guardar Resultados</h3>
+        <p style="font-size: 14px; color: #555;">Descarga un reporte en PDF de la simulación activa.</p>
       </div>
       
       <div class="export-controls">
         <input type="text" id="nombreEstudiante" placeholder="Tu nombre (para PDF)">
         <button class="btn btn-success" onclick="descargarPDFGlobal()">📥 Descargar PDF</button>
-        
-        <span style="color: #ced4da; margin: 0 10px; font-weight: bold;">|</span>
-        
-        <input type="email" id="emailUsuario" placeholder="correo-destinatario@ejemplo.com">
-        <button class="btn btn-warning" onclick="enviarResultadosPorCorreo()">✉ Enviar por Correo</button>
       </div>
     </div>
 
@@ -534,19 +528,16 @@
     const caloresEspecificos = {
       "Cobre": 386, "Hierro": 452, "Aluminio": 900, "Oro": 126,
       "Plata": 233, "Zinc": 388, "Carbono": 710, "Azufre": 710,
-      // SOLUCIÓN 1: Cambiado clave de "Fósforo" a "Fosforo"
       "Fosforo": 769, "Yodo": 145, "Calorimetro": 0
     };
     
     let dataCalorimetria = null;
 
-    // --- SOLUCIÓN 1: Actualización de Imagen ---
     document.getElementById("metal").addEventListener("change", (e) => {
       const metal = e.target.value;
       
       document.getElementById("c1").value = caloresEspecificos[metal] || 0;
       
-      // Al haber cambiado el value a "Fosforo", ahora buscará "Fosforo.png"
       document.getElementById("imagenCalorimetro").src = `${metal}.png`;
     });
 
@@ -882,103 +873,6 @@
         
         doc.save(`Adiabatica_${nombre}.pdf`);
       }
-    }
-
-    // --- SOLUCIÓN 2: Función para enviar por correo ---
-    function enviarResultadosPorCorreo() {
-      const emailUsuario = document.getElementById("emailUsuario").value.trim();
-      
-      // Validación básica del correo
-      if (!emailUsuario || !emailUsuario.includes("@") || !emailUsuario.includes(".")) {
-        alert("✉ Por favor, ingresa una dirección de correo electrónico válida.");
-        return;
-      }
-
-      let asunto = "Resultados de Laboratorio Virtual ESPE";
-      let cuerpoCorreo = "";
-
-      if (activeTab === 'calorimetria') {
-        if (!dataCalorimetria) { alert("✉ Realiza un cálculo en 'Calorimetría' primero."); return; }
-        asunto += " - Calorimetría";
-        cuerpoCorreo = `Hola,
-
-A continuación, se presentan los resultados de la simulación de Calorimetría:
-
-Tema: Mezcla de ${dataCalorimetria.material} y Agua
-
-[Material (${dataCalorimetria.material})]
-Masa: ${dataCalorimetria.m1.toFixed(3)} kg
-Calor Específico: ${dataCalorimetria.c1} J/kg°C
-Temperatura Inicial: ${dataCalorimetria.Ti1} °C
-Variación de Energía (ΔH/ΔU): ${dataCalorimetria.deltaH1.toFixed(3)} kJ
-
-[Agua]
-Masa: ${dataCalorimetria.m2.toFixed(3)} kg
-Calor Específico: ${dataCalorimetria.c2} J/kg°C
-Temperatura Inicial: ${dataCalorimetria.Ti2} °C
-Variación de Energía (ΔH/ΔU): ${dataCalorimetria.deltaH2.toFixed(3)} kJ
-
-----------------------------------------
-Temperatura de Equilibrio Final: ${dataCalorimetria.Tf.toFixed(2)} °C
-----------------------------------------
-
-Atentamente,
-El equipo del Laboratorio Virtual ESPE`;
-      
-      } else if (activeTab === 'isotermica') {
-        if (!dataIsoRev) { alert("✉ Realiza la simulación 'Isotérmica' primero."); return; }
-        asunto += " - Proceso Isotérmico";
-        cuerpoCorreo = `Hola,
-
-A continuación, se presentan los resultados de la simulación Isotérmica:
-
-Condiciones Globales:
-Moles: ${dataIsoRev.n} mol
-Temperatura Constante: ${dataIsoRev.T} K
-Volumen: ${dataIsoRev.Vi.toFixed(2)} L --> ${dataIsoRev.Vf.toFixed(2)} L
-Presión: ${dataIsoRev.Pi.toFixed(2)} atm --> ${dataIsoRev.Pf.toFixed(2)} atm
-
-[Proceso Reversible]
-Trabajo Realizado (W): ${dataIsoRev.Wv_J.toFixed(2)} J
-Calor Transferido (Q): ${(-dataIsoRev.Wv_J).toFixed(2)} J
-ΔU / ΔH: 0 J
-
-[Proceso Irreversible]
-Trabajo Realizado (W): ${dataIsoIrr.Wv_J.toFixed(2)} J
-Calor Transferido (Q): ${(-dataIsoIrr.Wv_J).toFixed(2)} J
-ΔU / ΔH: 0 J
-
-Atentamente,
-El equipo del Laboratorio Virtual ESPE`;
-
-      } else if (activeTab === 'adiabatica') {
-        if (!dataAdi) { alert("✉ Realiza la simulación 'Adiabática' primero."); return; }
-        asunto += " - Proceso Adiabático";
-        cuerpoCorreo = `Hola,
-
-A continuación, se presentan los resultados de la simulación Adiabática:
-
-Parámetro: Valor Inicial --> Valor Final
-Presión: ${dataAdi.Pi.toFixed(2)} atm --> ${dataAdi.Pf.toFixed(2)} atm
-Volumen: ${dataAdi.Vi.toFixed(2)} L --> ${dataAdi.Vf.toFixed(2)} L
-Temperatura: ${dataAdi.Ti.toFixed(2)} K --> ${dataAdi.Tf.toFixed(2)} K
-
-----------------------------------------
-Coeficiente Adiabático (γ): ${dataAdi.gamma}
-Trabajo Realizado (W): ${dataAdi.Wv_J.toFixed(2)} J
-Variación Energía Interna (ΔU): ${dataAdi.Wv_J.toFixed(2)} J
-Calor Transferido (Q): 0 J (Proceso Adiabático)
-----------------------------------------
-
-Atentamente,
-El equipo del Laboratorio Virtual ESPE`;
-      }
-
-      // Codificar URI para mailto:
-      const mailtoUrl = `mailto:${emailUsuario}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpoCorreo)}`;
-      
-      // Abrir el cliente de correo
-      window.location.href = mailtoUrl;
     }
   </script>
 </body>
