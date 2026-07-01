@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simuladores Interactivos de Fisicoquímica - ESPE</title>
+  <title>Simuladores Interactivos - ESPE (Corregido)</title>
   
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -12,16 +12,16 @@
   
   <style>
     /* =========================================
-       VARIABLES Y ESTILOS GLOBALES (TEMA VERDE)
-       ========================================= */
+        VARIABLES Y ESTILOS GLOBALES
+        ========================================= */
     :root {
-      --primary-color: #1b4332;    /* Verde Bosque Profundo */
-      --secondary-color: #2d6a4f;  /* Verde Alga/Académico */
-      --accent-color: #40916c;     /* Verde Esmeralda Funcional */
-      --bg-light: #f4f9f4;         /* Fondo con sutil tinte verde menta */
-      --text-dark: #2d3748;
+      --primary-color: #1b365d;
+      --secondary-color: #3498db;
+      --accent-color: #27ae60;
+      --bg-light: #f4f7f6;
+      --text-dark: #2c3e50;
       --card-bg: #ffffff;
-      --border-color: #d8e2dc;
+      --border-color: #e0e6ed;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,15 +34,15 @@
     }
 
     /* =========================================
-       ENCABEZADO (HERO)
-       ========================================= */
+        ENCABEZADO (HERO) CON FONDO
+        ========================================= */
     .hero {
-      background-image: linear-gradient(rgba(27, 67, 50, 0.9), rgba(45, 106, 79, 0.9)), url('fondo.jpg');
+      background-image: linear-gradient(rgba(27, 54, 93, 0.85), rgba(27, 54, 93, 0.85)), url('fondo.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       color: white;
-      padding: 25px 20px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -55,147 +55,144 @@
       align-items: center;
       width: 100%;
       max-width: 1200px;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
-    .hero-top img { max-height: 70px; background: rgba(255,255,255,0.95); padding: 5px; border-radius: 8px; }
+    .hero-top img { max-height: 70px; background: rgba(255,255,255,0.9); padding: 5px; border-radius: 8px; }
     
-    .hero-titles h1 { font-size: 26px; margin-bottom: 5px; font-weight: 700; }
-    .hero-titles p { font-size: 15px; font-weight: 300; letter-spacing: 0.5px; }
+    .hero-titles h1 { font-size: 28px; margin-bottom: 5px; }
+    .hero-titles p { font-size: 16px; font-weight: 300; }
     
     .info-authors {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 8px 20px;
-      border-radius: 20px;
-      font-size: 13px;
-      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-top: 15px;
       backdrop-filter: blur(5px);
-      border: 1px solid rgba(255,255,255,0.2);
     }
 
     /* =========================================
-       NAVEGACIÓN (PESTAÑAS)
-       ========================================= */
+        NAVEGACIÓN (PESTAÑAS)
+        ========================================= */
     .tabs {
       display: flex;
       justify-content: center;
       background: white;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
       position: sticky;
       top: 0;
       z-index: 100;
-      border-bottom: 1px solid var(--border-color);
     }
 
     .tab-btn {
       background: none;
       border: none;
-      padding: 15px 25px;
-      font-size: 15px;
+      padding: 15px 30px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--text-dark);
       cursor: pointer;
       border-bottom: 4px solid transparent;
-      transition: all 0.3s ease;
+      transition: all 0.3s;
     }
 
-    .tab-btn:hover { color: var(--accent-color); background: #f9fbf9; }
-    .tab-btn.active { border-bottom: 4px solid var(--accent-color); color: var(--primary-color); background: #f2f7f4; }
+    .tab-btn:hover { color: var(--secondary-color); background: #f8f9fa; }
+    .tab-btn.active { border-bottom: 4px solid var(--secondary-color); color: var(--secondary-color); }
 
     /* =========================================
-       CONTENEDOR PRINCIPAL
-       ========================================= */
+        CONTENEDOR PRINCIPAL
+        ========================================= */
     .main-container { max-width: 1300px; margin: 30px auto; padding: 0 20px; }
-    .tab-content { display: none; animation: fadeIn 0.4s ease; }
+    .tab-content { display: none; animation: fadeIn 0.4s; }
     .tab-content.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     .card {
       background: var(--card-bg);
       border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      padding: 25px;
       margin-bottom: 25px;
       border: 1px solid var(--border-color);
     }
 
     h2.section-title {
       color: var(--primary-color);
-      border-bottom: 2px solid var(--border-color);
+      border-bottom: 2px solid var(--secondary-color);
       padding-bottom: 10px;
       margin-bottom: 20px;
-      font-size: 22px;
     }
 
     /* =========================================
-       FORMULARIOS Y BOTONES
-       ========================================= */
+        FORMULARIOS Y BOTONES
+        ========================================= */
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
     
     .input-group { margin-bottom: 15px; }
-    label { display: block; font-weight: 600; margin-bottom: 6px; color: #34495e; font-size: 14px; }
+    label { display: block; font-weight: 600; margin-bottom: 5px; color: #34495e; font-size: 14px; }
     input, select {
-      width: 100%; padding: 11px 14px;
+      width: 100%; padding: 10px 12px;
       border: 1px solid #ced4da; border-radius: 6px;
-      font-size: 15px; transition: all 0.3s;
-      background-color: #fff;
+      font-size: 15px; transition: border-color 0.3s;
     }
-    input:focus, select:focus { border-color: var(--accent-color); outline: none; box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.15); }
+    input:focus, select:focus { border-color: var(--secondary-color); outline: none; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); }
+    input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
 
     button.btn {
-      padding: 12px 24px; font-size: 15px; font-weight: bold;
+      padding: 10px 20px; font-size: 15px; font-weight: bold;
       border: none; border-radius: 6px; cursor: pointer;
-      transition: all 0.2s ease; color: white;
+      transition: background 0.3s, transform 0.1s; color: white;
       display: inline-flex; align-items: center; justify-content: center;
     }
-    button.btn:active { transform: translateY(1px); }
+    button.btn:active { transform: translateY(2px); }
     button.btn-primary { background: var(--secondary-color); }
-    button.btn-primary:hover { background: var(--primary-color); }
-    button.btn-success { background: #2d6a4f; }
-    button.btn-success:hover { background: #1b365d; }
-    button.btn-danger { background: #9d0208; }
-    button.btn-danger:hover { background: #6a040f; }
+    button.btn-primary:hover { background: #2980b9; }
+    button.btn-success { background: var(--accent-color); }
+    button.btn-success:hover { background: #219a52; }
+    button.btn-danger { background: #e74c3c; }
+    button.btn-danger:hover { background: #c0392b; }
     
     /* =========================================
-       MÓDULO: CALORIMETRÍA
-       ========================================= */
-    .calorimetria-layout { display: flex; gap: 30px; flex-wrap: wrap; }
-    .calorimetria-form { flex: 1.5; min-width: 300px; }
-    .calorimetria-img { flex: 1; min-width: 280px; text-align: center; display: flex; align-items: center; justify-content: center; background: #f8fbf8; border-radius: 10px; border: 1px dashed var(--border-color); padding: 15px; }
-    .calorimetria-img img { max-width: 100%; max-height: 380px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05)); }
+        MÓDULO: CALORIMETRÍA
+        ========================================= */
+    .calorimetria-layout { display: flex; gap: 30px; }
+    .calorimetria-img { flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 10px; border: 1px dashed #ccc;}
+    .calorimetria-img img { max-width: 100%; max-height: 400px; object-fit: contain; }
+    .calorimetria-form { flex: 1.5; }
     
-    table.res-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
-    table.res-table th, table.res-table td { border: 1px solid var(--border-color); padding: 12px; text-align: center; font-size: 14px; }
-    table.res-table th { background: #e8f5e9; color: var(--primary-color); font-weight: 700; }
-    .positivo { color: #2d6a4f; font-weight: bold; }
-    .negativo { color: #b7094c; font-weight: bold; }
+    table.res-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    table.res-table th, table.res-table td { border: 1px solid var(--border-color); padding: 10px; text-align: center; }
+    table.res-table th { background: #f1f5f9; color: var(--primary-color); font-weight: bold; }
+    .positivo { color: #27ae60; font-weight: bold; }
+    .negativo { color: #e74c3c; font-weight: bold; }
 
     /* =========================================
-       MÓDULO: TERMODINÁMICA (Animaciones)
-       ========================================= */
+        MÓDULO: TERMODINÁMICA (Animaciones)
+        ========================================= */
     .thermo-comparison { display: flex; gap: 20px; flex-wrap: wrap; }
     .thermo-panel { flex: 1; min-width: 320px; }
     
-    .cylinder-container { display: flex; flex-direction: column; align-items: center; position: relative; height: 320px; margin: 15px 0; }
-    .cylinder { position: relative; width: 150px; height: 240px; background: linear-gradient(to bottom, #eaefa8, #f4f9f4); border: 3px solid #718355; border-radius: 12px 12px 0 0; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); }
-    .piston { position: absolute; width: 100%; height: 28px; background: linear-gradient(to bottom, #718355, #4f5d3e); border-top: 3px solid #3f4a31; border-bottom: 3px solid #3f4a31; bottom: 50px; transition: bottom 0.8s ease-in-out; z-index: 2; }
-    .piston-rod { position: absolute; width: 8px; height: 100px; background: linear-gradient(to right, #97a97c, #718355); top: -100px; left: 50%; transform: translateX(-50%); }
-    .base { width: 160px; height: 16px; background: linear-gradient(to bottom, #4f5d3e, #3f4a31); border-radius: 0 0 10px 10px; }
-    .burner { width: 140px; height: 16px; background: radial-gradient(circle, #ff9f1c, #ff5400); margin-top: 8px; border-radius: 8px; transition: all 0.8s; box-shadow: 0 0 12px #ff9f1c;}
-    .burner.cooling { background: radial-gradient(circle, #cbd5e1, #94a3b8); box-shadow: none; }
+    .cylinder-container { display: flex; flex-direction: column; align-items: center; position: relative; height: 350px; margin: 20px 0; }
+    .cylinder { position: relative; width: 160px; height: 260px; background: linear-gradient(to bottom, #e0e0e0, #f0f0f0); border: 3px solid #888; border-radius: 15px 15px 0 0; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); }
+    .piston { position: absolute; width: 100%; height: 30px; background: linear-gradient(to bottom, #707880, #505860); border-top: 3px solid #404850; border-bottom: 3px solid #303840; bottom: 50px; transition: bottom 1s ease-in-out; z-index: 2; }
+    .piston-rod { position: absolute; width: 8px; height: 100px; background: linear-gradient(to right, #606060, #404040); top: -100px; left: 50%; transform: translateX(-50%); }
+    .base { width: 170px; height: 20px; background: linear-gradient(to bottom, #707070, #505050); border-radius: 0 0 10px 10px; }
+    .burner { width: 150px; height: 20px; background: radial-gradient(circle, #e67e22, #d35400); margin-top: 10px; border-radius: 10px; transition: all 1s; box-shadow: 0 0 15px #e67e22;}
+    .burner.cooling { background: radial-gradient(circle, #bdc3c7, #95a5a6); box-shadow: none; }
     
     .particles { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 1; }
-    .particle { position: absolute; width: 5px; height: 5px; background: rgba(45, 106, 79, 0.6); border-radius: 50%; animation: rise 1.2s linear forwards; }
-    .particle.compression { animation: fall 1.2s linear forwards; background: rgba(255, 159, 28, 0.7); }
-    @keyframes rise { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-70px); opacity: 0; } }
-    @keyframes fall { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(70px); opacity: 0; } }
+    .particle { position: absolute; width: 5px; height: 5px; background: rgba(255,255,255,0.8); border-radius: 50%; animation: rise 1.5s linear forwards; }
+    .particle.compression { animation: fall 1.5s linear forwards; background: rgba(230, 126, 34, 0.8); }
+    @keyframes rise { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-80px); opacity: 0; } }
+    @keyframes fall { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(80px); opacity: 0; } }
     
-    .chart-box { height: 280px; width: 100%; margin-top: 15px; position: relative; }
+    .chart-box { height: 300px; width: 100%; margin-top: 15px; position: relative; }
     canvas { width: 100% !important; height: 100% !important; }
 
     /* PDF Export Area */
-    .pdf-section { background: #e8f5e9; padding: 20px; border-radius: 10px; display: flex; align-items: center; gap: 15px; margin-top: 20px; border-left: 5px solid var(--secondary-color); }
+    .pdf-section { background: #e8f4fc; padding: 20px; border-radius: 10px; display: flex; align-items: center; gap: 15px; margin-top: 20px; border-left: 5px solid var(--secondary-color); }
     .pdf-section input { max-width: 300px; }
   </style>
 </head>
@@ -206,36 +203,36 @@
       <img src="logo.png" alt="Logo Universidad" onerror="this.src='https://via.placeholder.com/150x50?text=ESPE'">
       <div class="hero-titles">
         <h1>Universidad de las Fuerzas Armadas - ESPE</h1>
-        <p>Departamento de Ciencias Exactas | Laboratorio Virtual de Fisicoquímica</p>
+        <p>Departamento de Ciencias Exactas | Laboratorio Virtual</p>
       </div>
       <img src="logo-exactas.png" alt="Logo Ciencias Exactas" onerror="this.src='https://via.placeholder.com/150x50?text=Ciencias+Exactas'">
     </div>
     <div class="info-authors">
-      <strong>Autores:</strong> Dennys Sagñay &nbsp;|&nbsp; 
+      <strong>Autores:</strong> Michelle Cruz, Nicole Gortaire, John Guamán &nbsp;|&nbsp; 
       <strong>Docente:</strong> Ing. Raquel Zúñiga &nbsp;|&nbsp; <strong>Año:</strong> 2025
     </div>
   </header>
 
   <nav class="tabs">
-    <button class="tab-btn active" onclick="switchTab(event, 'calorimetria')">Termodinámica: Calorimetría</button>
-    <button class="tab-btn" onclick="switchTab(event, 'isotermica')">Simulación Isotérmica</button>
-    <button class="tab-btn" onclick="switchTab(event, 'adiabatica')">Simulación Adiabática</button>
+    <button class="tab-btn active" onclick="switchTab('calorimetria', event)">Termodinámica: Calorimetría</button>
+    <button class="tab-btn" onclick="switchTab('isotermica', event)">Simulación Isotérmica</button>
+    <button class="tab-btn" onclick="switchTab('adiabatica', event)">Simulación Adiabática</button>
   </nav>
 
   <div class="main-container">
 
     <div id="calorimetria" class="tab-content active">
       <div class="card">
-        <h2 class="section-title">Simulador de Calorimetría de Mezclas</h2>
-        <p style="margin-bottom: 20px; color: #555;">Selecciona o ingresa los datos correspondientes para calcular la temperatura de equilibrio térmico de la mezcla.</p>
+        <h2 class="section-title">Simulador de Calorimetría</h2>
+        <p style="margin-bottom: 20px; color: #555;">Calcula la temperatura de equilibrio y transferencia de calor al mezclar un material y agua en un calorímetro.</p>
         
         <div class="calorimetria-layout">
           <div class="calorimetria-form">
-            <form id="simuladorForm" onsubmit="calcularCalorimetria(event)">
+            <form id="simuladorForm">
               <div class="grid-2">
                 <div class="input-group">
-                  <label for="metal">1. Selecciona el Material Base:</label>
-                  <select id="metal" onchange="actualizarMaterial()" required>
+                  <label for="metal">1. Selecciona el Material:</label>
+                  <select id="metal" required>
                     <option value="Calorimetro">-- Selecciona --</option>
                     <optgroup label="Metales">
                       <option value="Aluminio">Aluminio</option>
@@ -248,14 +245,14 @@
                     <optgroup label="No metales">
                       <option value="Carbono">Carbono</option>
                       <option value="Azufre">Azufre</option>
-                      <option value="Fosforo">Fósforo</option>
+                      <option value="Fósforo">Fósforo</option>
                       <option value="Yodo">Yodo</option>
                     </optgroup>
                   </select>
                 </div>
                 <div class="input-group">
-                  <label for="c1">Calor Específico Material (J/kg°C):</label>
-                  <input type="number" id="c1" required step="any" value="0">
+                  <label for="c1">Calor Específico (J/kg°C):</label>
+                  <input type="number" id="c1" required readonly>
                 </div>
               </div>
 
@@ -270,7 +267,7 @@
                 </div>
               </div>
 
-              <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
+              <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
 
               <div class="grid-2">
                 <div class="input-group">
@@ -283,32 +280,28 @@
                 </div>
                 <div class="input-group" style="grid-column: span 2;">
                   <label for="c2">Calor Específico del Agua (J/kg°C):</label>
-                  <input type="number" id="c2" required step="any" value="4186">
+                  <input type="number" id="c2" required readonly value="4186">
                 </div>
               </div>
 
-              <button type="submit" class="btn btn-primary" style="width: 100%;">▶️ Calcular Equilibrio Térmico</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Calcular Equilibrio</button>
             </form>
           </div>
 
           <div class="calorimetria-img">
-            <img id="imagenCalorimetro" src="Calorimetro.png" alt="Calorímetro Visual" onerror="this.src='https://via.placeholder.com/300x350?text=Calorimetro'">
+            <img id="imagenCalorimetro" src="Calorimetro.png" alt="Calorímetro Visual" onerror="this.src='https://via.placeholder.com/300x400?text=Imagen+No+Encontrada'">
           </div>
         </div>
 
-        <div id="outputSection" style="display: none; margin-top: 25px; padding-top: 20px; border-top: 2px dashed var(--border-color);">
-          <h3 style="color: var(--secondary-color); margin-bottom: 12px;">Resultados de la Mezcla:</h3>
-          <p id="tempEquilibrio" style="font-size: 16px; font-weight: bold; background: #e8f5e9; padding: 12px; border-radius: 6px; display: inline-block; border-left: 4px solid var(--accent-color);"></p>
+        <div id="outputSection" style="display: none; margin-top: 25px; padding-top: 20px; border-top: 2px dashed #eee;">
+          <h3 style="color: var(--secondary-color); margin-bottom: 10px;">Resultados Analíticos:</h3>
+          <p id="tempEquilibrio" style="font-size: 18px; font-weight: bold; background: #e2f3e2; padding: 10px; border-radius: 6px; display: inline-block;"></p>
           
           <table class="res-table">
-            <thead>
-              <tr><th>Magnitud Termodinámica</th><th>Material</th><th>Agua</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Variación de Entalpía ΔH (kJ)</td><td id="deltaHMetal">0.00</td><td id="deltaHAgua">0.00</td></tr>
-              <tr><td>Variación de Energía Interna ΔU (kJ)</td><td id="deltaUMetal">0.00</td><td id="deltaUAgua">0.00</td></tr>
-              <tr><td>Calor Transferido Q (kJ)</td><td id="calorMetal">0.00</td><td id="calorAgua">0.00</td></tr>
-            </tbody>
+            <tr><th>Magnitud Termodinámica</th><th>Material</th><th>Agua</th></tr>
+            <tr><td>Variación de Entalpía ΔH (kJ)</td><td id="deltaHMetal"></td><td id="deltaHAgua"></td></tr>
+            <tr><td>Variación de Energía Interna ΔU (kJ)</td><td id="deltaUMetal"></td><td id="deltaUAgua"></td></tr>
+            <tr><td>Calor Transferido Q (kJ)</td><td id="calorMetal"></td><td id="calorAgua"></td></tr>
           </table>
         </div>
       </div>
@@ -318,7 +311,7 @@
       <div class="card">
         <h2 class="section-title">Expansión / Compresión Isotérmica</h2>
         
-        <div style="background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 25px; border: 1px solid var(--border-color);">
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border-color);">
           <div class="grid-2">
             <div class="input-group">
               <label>Tipo de Datos de Entrada:</label>
@@ -363,15 +356,15 @@
               <input type="number" id="temp" value="300" min="1" />
             </div>
             <div class="input-group" style="display: flex; align-items: flex-end; gap: 10px;">
-              <button class="btn btn-primary" onclick="simularIsotermico()" style="flex: 1;">▶️ Iniciar Simulación</button>
-              <button class="btn btn-danger" onclick="reiniciarIsotermico()">↺ Limpiar</button>
+              <button class="btn btn-primary" onclick="simularIsotermico()">▶️ Iniciar Simulación</button>
+              <button class="btn btn-danger" onclick="reiniciarIsotermico()">↺ Resetear</button>
             </div>
           </div>
         </div>
 
         <div class="thermo-comparison">
-          <div class="thermo-panel card" style="box-shadow: none; border: 1px solid var(--border-color);">
-            <h3 style="text-align: center; color: var(--secondary-color); margin-bottom: 10px;">Proceso Reversible</h3>
+          <div class="thermo-panel card" style="box-shadow: none; border: 1px solid #eee;">
+            <h3 style="text-align: center; color: var(--secondary-color);">Proceso Reversible</h3>
             <div class="cylinder-container">
               <div class="cylinder" id="cilindro-reversible">
                 <div class="particles" id="particles-reversible"></div>
@@ -380,12 +373,12 @@
               <div class="base"></div>
               <div class="burner" id="burner-reversible"></div>
             </div>
-            <div id="res-reversible" style="font-size: 14px; background: #f8fbf8; padding: 12px; border-radius: 6px; min-height: 100px; border-left: 4px solid var(--secondary-color);"></div>
+            <div id="res-reversible" style="font-size: 14px; background: #f9f9f9; padding: 10px; border-radius: 6px; min-height: 120px;"></div>
             <div class="chart-box"><canvas id="grafica-reversible"></canvas></div>
           </div>
           
-          <div class="thermo-panel card" style="box-shadow: none; border: 1px solid var(--border-color);">
-            <h3 style="text-align: center; color: #a63a50; margin-bottom: 10px;">Proceso Irreversible</h3>
+          <div class="thermo-panel card" style="box-shadow: none; border: 1px solid #eee;">
+            <h3 style="text-align: center; color: #e74c3c;">Proceso Irreversible</h3>
             <div class="cylinder-container">
               <div class="cylinder" id="cilindro-irreversible">
                 <div class="particles" id="particles-irreversible"></div>
@@ -394,7 +387,7 @@
               <div class="base"></div>
               <div class="burner" id="burner-irreversible"></div>
             </div>
-            <div id="res-irreversible" style="font-size: 14px; background: #fdf6f6; padding: 12px; border-radius: 6px; min-height: 100px; border-left: 4px solid #a63a50;"></div>
+            <div id="res-irreversible" style="font-size: 14px; background: #f9f9f9; padding: 10px; border-radius: 6px; min-height: 120px;"></div>
             <div class="chart-box"><canvas id="grafica-irreversible"></canvas></div>
           </div>
         </div>
@@ -403,13 +396,15 @@
 
     <div id="adiabatica" class="tab-content">
       <div class="card">
-        <h2 class="section-title">Expansión / Compresión Adiabática Reversible</h2>
+        <h2 class="section-title">Expansión / Compresión Adiabática</h2>
         
-        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--secondary-color); font-size: 14px; color: var(--primary-color);">
-          <strong>Nota de Proceso (\( Q = 0 \)):</strong> Al no haber transferencia calorífica, todo el trabajo altera directamente la energía interna provocando saltos inmediatos de temperatura térmica.
+        <div style="background: #e8f4fc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--secondary-color); font-size: 14px;">
+          <strong>Nota Teórica:</strong> En un proceso adiabático, no hay transferencia de calor (\( Q = 0 \)). 
+          El trabajo realizado cambia la energía interna del sistema, lo que provoca una variación en la temperatura.
+          <br> Fórmulas clave: \( P_1 V_1^\gamma = P_2 V_2^\gamma \) y \( T_1 V_1^{\gamma-1} = T_2 V_2^{\gamma-1} \)
         </div>
 
-        <div style="background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border-color);">
           <div class="grid-2">
              <div class="input-group">
               <label>Tipo de Gas:</label>
@@ -449,7 +444,7 @@
 
         <div class="thermo-comparison">
           <div class="thermo-panel">
-            <div class="cylinder-container" style="height: 280px;">
+            <div class="cylinder-container" style="height: 300px;">
               <div class="cylinder" id="cilindro-adiabatica">
                 <div class="particles" id="particles-adiabatica"></div>
                 <div class="piston" id="piston-adiabatica"><div class="piston-rod"></div></div>
@@ -457,12 +452,12 @@
               <div class="base"></div>
               <div class="burner cooling" id="burner-adiabatica"></div>
             </div>
-            <div id="res-adiabatica" style="font-size: 14px; background: #f8fbf8; padding: 15px; border-radius: 6px; border-left: 4px solid var(--accent-color);">
+            <div id="res-adiabatica" style="font-size: 14px; background: #f9f9f9; padding: 15px; border-radius: 6px; border-left: 4px solid #8e44ad;">
               Esperando simulación...
             </div>
           </div>
           <div class="thermo-panel">
-            <div class="chart-box" style="height: 380px;">
+            <div class="chart-box" style="height: 400px;">
               <canvas id="grafica-adiabatica"></canvas>
             </div>
           </div>
@@ -472,61 +467,66 @@
 
     <div class="pdf-section">
       <div style="flex: 1;">
-        <h3 style="color: var(--primary-color); margin-bottom: 5px;">Exportar Reporte de Laboratorio</h3>
-        <p style="font-size: 14px; color: #555;">Descarga un reporte estructurado formal en PDF de la simulación activa.</p>
+        <h3 style="color: var(--primary-color); margin-bottom: 5px;">Exportar Resultados</h3>
+        <p style="font-size: 14px; color: #555;">Descarga un reporte en PDF de la pestaña actual.</p>
       </div>
-      <input type="text" id="nombreEstudiante" placeholder="Nombre del Estudiante">
-      <button class="btn btn-success" onclick="descargarPDFGlobal()">📥 Guardar PDF</button>
+      <input type="text" id="nombreEstudiante" placeholder="Ingresa tu nombre (opcional)">
+      <button class="btn btn-success" onclick="descargarPDFGlobal()">📥 Descargar PDF</button>
     </div>
 
-  </div>
-
-  <script>
-    // --- LÓGICA DE PESTAÑAS (MÉTODO SEGURO) ---
+  </div> <script>
+    // --- Solución 1: LÓGICA DE PESTAÑAS (JS Actualizado) ---
     let activeTab = 'calorimetria';
-    
-    function switchTab(event, tabId) {
+    // Modifica la función para aceptar el argumento 'evt'
+    function switchTab(tabId, evt) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       
       document.getElementById(tabId).classList.add('active');
-      if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
+      
+      // Usa 'evt' en lugar de 'event' (que es global undefined)
+      if (evt) {
+        evt.currentTarget.classList.add('active');
       }
+      
       activeTab = tabId;
 
-      // Redimensionar gráficos para renderizado correcto en contenedores visibles
+      // Actualizar gráficos si es necesario al hacer visibles los canvas
       if(tabId === 'isotermica') {
-        if(chartReversible) chartReversible.resize();
-        if(chartIrreversible) chartIrreversible.resize();
+        if(chartReversible) chartReversible.update();
+        if(chartIrreversible) chartIrreversible.update();
       }
       if(tabId === 'adiabatica') {
-        if(chartAdiabatica) chartAdiabatica.resize();
+        if(chartAdiabatica) chartAdiabatica.update();
       }
     }
 
     // --- LÓGICA DE CALORIMETRÍA ---
     const caloresEspecificos = {
-      "Aluminio": 900, "Cobre": 386, "Hierro": 452, "Oro": 126,
+      "Cobre": 386, "Hierro": 452, "Aluminio": 900, "Oro": 126,
       "Plata": 233, "Zinc": 388, "Carbono": 710, "Azufre": 710,
       "Fósforo": 769, "Yodo": 145, "Calorimetro": 0
     };
     
+    // Variables globales para PDF de Calorimetría
     let dataCalorimetria = null;
 
-    function actualizarMaterial() {
-      const metal = document.getElementById("metal").value;
-      // Actualizar calor específico (ahora el usuario puede editarlo libremente)
+    // --- Solución 2: Actualización de Imagen (JS Actualizado) ---
+    document.getElementById("metal").addEventListener("change", (e) => {
+      const metal = e.target.value;
+      
+      // Actualizar calor específico (ya lo hacías)
       document.getElementById("c1").value = caloresEspecificos[metal] || 0;
-      // Actualizar imagen dinámica
-      document.getElementById("imagenCalorimetro").src = metal + ".png";
-    }
+      
+      // CORRECCIÓN: Usar plantillas de cadena (comillas invertidas) concatenando correctamente la extensión.
+      // Asegúrate de tener los archivos (ej: "Cobre.png") en la misma carpeta.
+      document.getElementById("imagenCalorimetro").src = `${metal}.png`;
+    });
 
-    function calcularCalorimetria(event) {
+    document.getElementById("simuladorForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
-      const selector = document.getElementById("metal");
-      const material = selector.options[selector.selectedIndex].text;
+      const material = document.getElementById("metal").options[document.getElementById("metal").selectedIndex].text;
       const m1 = parseFloat(document.getElementById("m1").value);
       const c1 = parseFloat(document.getElementById("c1").value);
       const Ti1 = parseFloat(document.getElementById("Ti1").value);
@@ -535,22 +535,11 @@
       const c2 = parseFloat(document.getElementById("c2").value); 
       const Ti2 = parseFloat(document.getElementById("Ti2").value);
 
-      if (isNaN(m1) || isNaN(c1) || isNaN(Ti1) || isNaN(m2) || isNaN(c2) || isNaN(Ti2)) {
-        alert("Asegúrate de llenar todos los valores con números válidos.");
-        return;
-      }
+      if(c1 === 0) { alert("Por favor selecciona un material válido."); return; }
 
-      // Cálculo de Temperatura de Equilibrio Térmico
-      const denominador = (m1 * c1) + (m2 * c2);
-      if (denominador === 0) {
-        alert("La masa y calores ingresados impiden calcular el equilibrio (División para cero).");
-        return;
-      }
-      
-      const Tf = (m1 * c1 * Ti1 + m2 * c2 * Ti2) / denominador;
+      const Tf = (m1 * c1 * Ti1 + m2 * c2 * Ti2) / (m1 * c1 + m2 * c2);
       document.getElementById("tempEquilibrio").textContent = "Temperatura de equilibrio (Tf): " + Tf.toFixed(2) + " °C";
 
-      // Transferencia de Calor en kJ
       const deltaH1 = (m1 * c1 * (Tf - Ti1)) / 1000; 
       const deltaH2 = (m2 * c2 * (Tf - Ti2)) / 1000; 
       
@@ -568,14 +557,15 @@
       formatCell(deltaH2, "calorAgua");
 
       document.getElementById("outputSection").style.display = "block";
-      dataCalorimetria = { material, m1, c1, Ti1, m2, c2, Ti2, Tf, deltaH1, deltaH2 };
-    }
 
-    // --- VARIABLES DE GRÁFICOS Y SIMULACIONES GLOBALES ---
+      dataCalorimetria = { material, m1, c1, Ti1, m2, c2, Ti2, Tf, deltaH1, deltaH2 };
+    });
+
+    // --- LÓGICA DE TERMODINÁMICA GLOBALES ---
     const R = 0.08206; 
     const RJ = 8.314;  
     let chartReversible, chartIrreversible, chartAdiabatica;
-    let dataIsoRev = null, dataIsoIrr = null, dataAdiReport = null; 
+    let dataIsoRev = null, dataIsoIrr = null, dataAdi = null; 
 
     window.onload = function() {
       const ctxRev = document.getElementById("grafica-reversible").getContext("2d");
@@ -585,7 +575,7 @@
       chartIrreversible = new Chart(ctxIrr, { type: 'scatter', data: { datasets: [] }, options: getChartOpts('Isoterma Irreversible') });
       
       const ctxAdi = document.getElementById("grafica-adiabatica").getContext("2d");
-      chartAdiabatica = new Chart(ctxAdi, { type: 'scatter', data: { datasets: [] }, options: getChartOpts('Trayectoria Adiabática (Q=0)') });
+      chartAdiabatica = new Chart(ctxAdi, { type: 'scatter', data: { datasets: [] }, options: getChartOpts('Adiabática (Q=0)') });
     };
 
     function getChartOpts(title) {
@@ -603,12 +593,12 @@
     }
 
     function volumenAPosicion(V, Vmin=1, Vmax=100) {
-      const minPx = 40, maxPx = 200; 
+      const minPx = 40, maxPx = 220; 
       const p = Math.min(Math.max((V - Vmin)/(Vmax - Vmin), 0), 1);
       return minPx + p * (maxPx - minPx);
     }
 
-    // --- SIMULACIÓN ISOTÉRMICA (DESBLOQUEADA) ---
+    // --- SIMULACIÓN ISOTÉRMICA ---
     function toggleInputType() {
       const tipo = document.getElementById("tipo-entrada").value;
       if (tipo === "presion") {
@@ -642,17 +632,17 @@
         document.getElementById("pf").value = Pf.toFixed(3);
       }
 
-      const VmaxPlot = Math.max(Vi, Vf) * 1.4;
-      const PmaxPlot = Math.max(Pi, Pf) * 1.4;
+      const VmaxPlot = Math.max(Vi, Vf) * 1.5;
+      const PmaxPlot = Math.max(Pi, Pf) * 1.5;
 
       ejecutarIsoReversible(n, T, Pi, Pf, Vi, Vf, VmaxPlot, PmaxPlot);
       ejecutarIsoIrreversible(n, T, Pi, Pf, Vi, Vf, VmaxPlot, PmaxPlot);
     }
 
     function animarCilindro(prefix, esExpansion, Vf_relativo) {
-      document.getElementById(piston-${prefix}).style.bottom = ${Vf_relativo}px;
-      const burner = document.getElementById(burner-${prefix});
-      const parts = document.getElementById(particles-${prefix});
+      document.getElementById(`piston-${prefix}`).style.bottom = `${Vf_relativo}px`;
+      const burner = document.getElementById(`burner-${prefix}`);
+      const parts = document.getElementById(`particles-${prefix}`);
       parts.innerHTML = "";
       
       if(esExpansion) {
@@ -661,8 +651,8 @@
           setTimeout(() => {
             let p = document.createElement("div"); p.className="particle";
             p.style.left = Math.random()*100 + "%"; p.style.bottom = "10%";
-            parts.appendChild(p); setTimeout(()=>p.remove(), 1200);
-          }, Math.random()*800);
+            parts.appendChild(p); setTimeout(()=>p.remove(), 1500);
+          }, Math.random()*1000);
         }
       } else {
         burner.classList.add("cooling");
@@ -670,8 +660,8 @@
           setTimeout(() => {
             let p = document.createElement("div"); p.className="particle compression";
             p.style.left = Math.random()*100 + "%"; p.style.top = "10%";
-            parts.appendChild(p); setTimeout(()=>p.remove(), 1200);
-          }, Math.random()*800);
+            parts.appendChild(p); setTimeout(()=>p.remove(), 1500);
+          }, Math.random()*1000);
         }
       }
     }
@@ -679,14 +669,13 @@
     function ejecutarIsoReversible(n, T, Pi, Pf, Vi, Vf, VmaxP, PmaxP) {
       const Wv = -n * R * T * Math.log(Vf / Vi); 
       const Wv_J = Wv * 101.325;
-      const Q = -Wv;
 
-      dataIsoRev = { n, T, Pi, Pf, Vi, Vf, Wv, Wv_J, Q }; 
+      dataIsoRev = { n, T, Pi, Pf, Vi, Vf, Wv, Wv_J }; 
 
       document.getElementById("res-reversible").innerHTML = `
-        <b>Trabajo Realizado (W):</b> ${Wv.toFixed(2)} L·atm (${Wv_J.toFixed(2)} J)<br>
-        <b>Calor Absorbido (Q):</b> ${(Q).toFixed(2)} L·atm<br>
-        <b>ΔU = ΔH = </b> 0.00 J (Proceso Isotérmico)
+        <b>Trabajo (W):</b> ${Wv.toFixed(2)} L·atm (${Wv_J.toFixed(2)} J)<br>
+        <b>Calor (Q):</b> ${(-Wv).toFixed(2)} L·atm<br>
+        <b>ΔU = ΔH = </b> 0 J
       `;
 
       animarCilindro('reversible', Vf > Vi, volumenAPosicion(Vf, Math.min(Vi,Vf)*0.5, Math.max(Vi,Vf)*1.5));
@@ -698,10 +687,10 @@
       chartReversible.options.scales.x.max = VmaxP;
       chartReversible.options.scales.y.max = PmaxP;
       chartReversible.data.datasets = [
-        { label: 'Isoterma Gas Ideal', data: dataIso, borderColor: '#2d6a4f', type: 'line', pointRadius: 0, borderWidth: 2 },
-        { label: 'Área de Trabajo', data: area, backgroundColor: 'rgba(64, 145, 108, 0.25)', fill: true, type: 'line', pointRadius: 0 },
-        { label: 'Estado A', data: [{x: Vi, y: Pi}], backgroundColor: '#40916c', pointRadius: 7 },
-        { label: 'Estado B', data: [{x: Vf, y: Pf}], backgroundColor: '#9d0208', pointRadius: 7 }
+        { label: 'Isoterma', data: dataIso, borderColor: '#3498db', type: 'line', pointRadius: 0, borderWidth: 2 },
+        { label: 'Trabajo (Área)', data: area, backgroundColor: 'rgba(52, 152, 219, 0.3)', fill: true, type: 'line', pointRadius: 0 },
+        { label: 'Inicio', data: [{x: Vi, y: Pi}], backgroundColor: '#2ecc71', pointRadius: 6 },
+        { label: 'Fin', data: [{x: Vf, y: Pf}], backgroundColor: '#e74c3c', pointRadius: 6 }
       ];
       chartReversible.update();
     }
@@ -713,9 +702,9 @@
       dataIsoIrr = { n, T, Pi, Pf, Vi, Vf, Wv, Wv_J }; 
 
       document.getElementById("res-irreversible").innerHTML = `
-        <b>Trabajo Opositor (W):</b> ${Wv.toFixed(2)} L·atm (${Wv_J.toFixed(2)} J)<br>
-        <b>Calor Transferido (Q):</b> ${(-Wv).toFixed(2)} L·atm<br>
-        <b>ΔU = ΔH = </b> 0.00 J
+        <b>Trabajo (W):</b> ${Wv.toFixed(2)} L·atm (${Wv_J.toFixed(2)} J)<br>
+        <b>Calor (Q):</b> ${(-Wv).toFixed(2)} L·atm<br>
+        <b>ΔU = ΔH = </b> 0 J
       `;
 
       animarCilindro('irreversible', Vf > Vi, volumenAPosicion(Vf, Math.min(Vi,Vf)*0.5, Math.max(Vi,Vf)*1.5));
@@ -723,9 +712,9 @@
       chartIrreversible.options.scales.x.max = VmaxP;
       chartIrreversible.options.scales.y.max = PmaxP;
       chartIrreversible.data.datasets = [
-        { label: 'Ruta Irreversible', data: [{x: Vi, y: Pi}, {x: Vi, y: Pf}, {x: Vf, y: Pf}], borderColor: '#9d0208', type: 'line', fill: true, backgroundColor: 'rgba(157, 2, 8, 0.15)' },
-        { label: 'Estado A', data: [{x: Vi, y: Pi}], backgroundColor: '#40916c', pointRadius: 7 },
-        { label: 'Estado B', data: [{x: Vf, y: Pf}], backgroundColor: '#9d0208', pointRadius: 7 }
+        { label: 'Ruta Irreversible', data: [{x: Vi, y: Pi}, {x: Vi, y: Pf}, {x: Vf, y: Pf}], borderColor: '#e74c3c', type: 'line', fill: true, backgroundColor: 'rgba(231, 76, 60, 0.2)' },
+        { label: 'Inicio', data: [{x: Vi, y: Pi}], backgroundColor: '#2ecc71', pointRadius: 6 },
+        { label: 'Fin', data: [{x: Vf, y: Pf}], backgroundColor: '#c0392b', pointRadius: 6 }
       ];
       chartIrreversible.update();
     }
@@ -761,17 +750,16 @@
       const Wv_J = Wv * 101.325;
       const dU_J = Wv_J; 
 
-      // Guardar con nombre seguro sin colisiones de variables locales
-      dataAdiReport = { gamma, n, Ti, Tf, Pi, Pf, Vi, Vf, Wv, Wv_J };
+      dataAdi = { gamma, n, Ti, Tf, Pi, Pf, Vi, Vf, Wv, Wv_J };
 
       document.getElementById("res-adiabatica").innerHTML = `
-        <b>Estados de Presión:</b> Pi=${Pi.toFixed(2)} atm &rarr; Pf=${Pf.toFixed(2)} atm<br>
-        <b>Estados de Temperatura:</b> Ti=${Ti.toFixed(2)} K &rarr; Tf=${Tf.toFixed(2)} K<br>
-        <b>Trabajo del Gas (W):</b> ${Wv.toFixed(2)} L·atm (${Wv_J.toFixed(2)} J)<br>
-        <b>Variación de Energía (ΔU):</b> ${dU_J.toFixed(2)} J &nbsp;|&nbsp; <b>Calor (Q):</b> 0 J
+        <b>Presiones:</b> Pi=${Pi.toFixed(2)} atm &rarr; Pf=${Pf.toFixed(2)} atm<br>
+        <b>Temperaturas:</b> Ti=${Ti.toFixed(2)} K &rarr; Tf=${Tf.toFixed(2)} K<br>
+        <b>Trabajo (W):</b> ${Wv.toFixed(2)} L·atm (${Wv_J.toFixed(2)} J)<br>
+        <b>ΔU:</b> ${dU_J.toFixed(2)} J &nbsp;|&nbsp; <b>Q:</b> 0 J
       `;
 
-      document.getElementById("piston-adiabatica").style.bottom = ${volumenAPosicion(Vf, Math.min(Vi,Vf)*0.5, Math.max(Vi,Vf)*1.5)}px;
+      document.getElementById("piston-adiabatica").style.bottom = `${volumenAPosicion(Vf, Math.min(Vi,Vf)*0.5, Math.max(Vi,Vf)*1.5)}px`;
       
       const dataAdiCurve = [], areaAdi = [];
       const K = Pi * Math.pow(Vi, gamma);
@@ -781,92 +769,91 @@
       for(let v = Math.min(Vi, Vf); v <= Math.max(Vi, Vf); v+=0.1) areaAdi.push({x: v, y: K/Math.pow(v, gamma)});
 
       chartAdiabatica.options.scales.x.max = VmaxP;
-      chartAdiabatica.options.scales.y.max = Math.max(Pi, Pf) * 1.4;
+      chartAdiabatica.options.scales.y.max = Math.max(Pi, Pf) * 1.5;
       chartAdiabatica.data.datasets = [
-        { label: 'Curva Adiabática (PV^γ = K)', data: dataAdiCurve, borderColor: '#1b4332', type: 'line', pointRadius: 0, borderWidth: 2 },
-        { label: 'Área Trabajo Realizado', data: areaAdi, backgroundColor: 'rgba(27, 67, 50, 0.2)', fill: true, type: 'line', pointRadius: 0 },
-        { label: 'Inicio', data: [{x: Vi, y: Pi}], backgroundColor: '#40916c', pointRadius: 7 },
-        { label: 'Fin', data: [{x: Vf, y: Pf}], backgroundColor: '#9d0208', pointRadius: 7 }
+        { label: 'Adiabática', data: dataAdiCurve, borderColor: '#8e44ad', type: 'line', pointRadius: 0, borderWidth: 2 },
+        { label: 'Trabajo', data: areaAdi, backgroundColor: 'rgba(142, 68, 173, 0.3)', fill: true, type: 'line', pointRadius: 0 },
+        { label: 'Inicio', data: [{x: Vi, y: Pi}], backgroundColor: '#2ecc71', pointRadius: 6 },
+        { label: 'Fin', data: [{x: Vf, y: Pf}], backgroundColor: '#e74c3c', pointRadius: 6 }
       ];
       chartAdiabatica.update();
     }
 
-    // --- GENERACIÓN DE REPORTES EN PDF ---
+    // --- GENERACIÓN DE PDF ---
     function descargarPDFGlobal() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      const nombre = document.getElementById("nombreEstudiante").value || "Estudiante Evaluado";
+      const nombre = document.getElementById("nombreEstudiante").value || "Estudiante";
       
       doc.setFontSize(18);
-      doc.setTextColor(27, 67, 50); 
-      doc.text("Reporte de Laboratorio Virtual de Fisicoquímica", 105, 20, { align: 'center' });
+      doc.setTextColor(27, 54, 93); 
+      doc.text("Reporte de Laboratorio Virtual", 105, 20, { align: 'center' });
       
-      doc.setFontSize(11);
-      doc.setTextColor(60, 60, 60);
-      doc.text(Estudiante: ${nombre}, 20, 32);
-      doc.text(Institución: Universidad de las Fuerzas Armadas - ESPE, 20, 38);
-      doc.text(Fecha de Emisión: ${new Date().toLocaleDateString()}, 145, 32);
-      doc.line(20, 42, 190, 42); 
+      doc.setFontSize(12);
+      doc.setTextColor(50, 50, 50);
+      doc.text(`Nombre: ${nombre}`, 20, 35);
+      doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 35);
+      doc.line(20, 40, 190, 40); 
 
       if (activeTab === 'calorimetria') {
-        if(!dataCalorimetria) { alert("Primero ejecuta un cálculo analítico en Calorimetría."); return; }
-        doc.setFontSize(13); doc.text("Módulo Termodinámico: Análisis Calorimétrico", 20, 50);
+        if(!dataCalorimetria) { alert("Primero realiza un cálculo."); return; }
+        doc.setFontSize(14); doc.text("Tema: Calorimetría", 20, 50);
         
         doc.autoTable({
           startY: 55,
-          head: [['Parámetro Físico', 'Material Estudiado ('+dataCalorimetria.material+')', 'Fluido Caloportador (Agua)']],
+          head: [['Parámetro', 'Material ('+dataCalorimetria.material+')', 'Agua']],
           body: [
-            ['Masa de Control (kg)', dataCalorimetria.m1.toFixed(3), dataCalorimetria.m2.toFixed(3)],
-            ['Calor Específico Inducido (J/kg°C)', dataCalorimetria.c1, dataCalorimetria.c2],
+            ['Masa (kg)', dataCalorimetria.m1.toFixed(3), dataCalorimetria.m2.toFixed(3)],
+            ['Calor Específico (J/kg°C)', dataCalorimetria.c1, dataCalorimetria.c2],
             ['Temperatura Inicial (°C)', dataCalorimetria.Ti1, dataCalorimetria.Ti2],
-            ['Variación Entálpica ΔH / ΔU (kJ)', dataCalorimetria.deltaH1.toFixed(3), dataCalorimetria.deltaH2.toFixed(3)]
+            ['ΔH / ΔU (kJ)', dataCalorimetria.deltaH1.toFixed(3), dataCalorimetria.deltaH2.toFixed(3)]
           ]
         });
-        doc.setFontSize(11);
-        doc.text(Temperatura de Equilibrio Final Calculada: ${dataCalorimetria.Tf.toFixed(2)} °C, 20, doc.lastAutoTable.finalY + 15);
-        doc.save(Reporte_Calorimetria_${nombre}.pdf);
+        doc.setFontSize(12);
+        doc.text(`Temperatura de Equilibrio: ${dataCalorimetria.Tf.toFixed(2)} °C`, 20, doc.lastAutoTable.finalY + 15);
+        doc.save(`Calorimetria_${nombre}.pdf`);
       
       } else if (activeTab === 'isotermica') {
-        if(!dataIsoRev) { alert("Debes simular el proceso isotérmico antes de guardar."); return; }
-        doc.setFontSize(13); doc.text("Módulo Termodinámico: Expansiones / Compresiones Isotérmicas", 20, 50);
+        if(!dataIsoRev) { alert("Primero realiza la simulación."); return; }
+        doc.setFontSize(14); doc.text("Tema: Expansión/Compresión Isotérmica", 20, 50);
         
         doc.setFontSize(11);
-        doc.text(Sustancia de Trabajo: Gas Ideal  |  Cantidad de materia (n): ${dataIsoRev.n} mol, 20, 60);
-        doc.text(Temperatura del Sistema: ${dataIsoRev.T} K (Constante), 20, 66);
-        doc.text(Variación de Fronteras: Volumen ${dataIsoRev.Vi.toFixed(2)} L &rarr; ${dataIsoRev.Vf.toFixed(2)} L, 20, 72);
+        doc.text(`Moles: ${dataIsoRev.n} mol | Temperatura: ${dataIsoRev.T} K`, 20, 60);
+        doc.text(`Volumen: ${dataIsoRev.Vi.toFixed(2)} L -> ${dataIsoRev.Vf.toFixed(2)} L`, 20, 68);
+        doc.text(`Presión: ${dataIsoRev.Pi.toFixed(2)} atm -> ${dataIsoRev.Pf.toFixed(2)} atm`, 20, 76);
 
         doc.autoTable({
-          startY: 80,
-          head: [['Tipo de Proceso Termodinámico', 'Trabajo Mecánico W (J)', 'Flujo de Calor Q (J)', 'ΔU Interna (J)']],
+          startY: 85,
+          head: [['Proceso', 'Trabajo W (J)', 'Calor Q (J)', 'ΔU (J)']],
           body: [
-            ['Ruta Reversible (Etapas Infinitas)', dataIsoRev.Wv_J.toFixed(2), (-dataIsoRev.Wv_J).toFixed(2), '0.00'],
-            ['Ruta Irreversible (Súbita)', dataIsoIrr.Wv_J.toFixed(2), (-dataIsoIrr.Wv_J).toFixed(2), '0.00']
+            ['Reversible', dataIsoRev.Wv_J.toFixed(2), (-dataIsoRev.Wv_J).toFixed(2), '0'],
+            ['Irreversible', dataIsoIrr.Wv_J.toFixed(2), (-dataIsoIrr.Wv_J).toFixed(2), '0']
           ]
         });
-        doc.save(Reporte_Isotermico_${nombre}.pdf);
+        doc.save(`Isotermica_${nombre}.pdf`);
 
       } else if (activeTab === 'adiabatica') {
-        if(!dataAdiReport) { alert("Debes ejecutar el cálculo adiabático antes de guardar el reporte."); return; }
-        doc.setFontSize(13); doc.text("Módulo Termodinámico: Trayectorias Adiabáticas Reversibles", 20, 50);
+        if(!dataAdi) { alert("Primero realiza la simulación."); return; }
+        doc.setFontSize(14); doc.text("Tema: Expansión/Compresión Adiabática", 20, 50);
         
         doc.autoTable({
-          startY: 58,
-          head: [['Variable de Estado', 'Magnitud Inicial', 'Magnitud Final']],
+          startY: 60,
+          head: [['Variable', 'Valor Inicial', 'Valor Final']],
           body: [
-            ['Presión del Sistema (atm)', dataAdiReport.Pi.toFixed(2), dataAdiReport.Pf.toFixed(2)],
-            ['Volumen de Control (L)', dataAdiReport.Vi.toFixed(2), dataAdiReport.Vf.toFixed(2)],
-            ['Temperatura Absoluta (K)', dataAdiReport.Ti.toFixed(2), dataAdiReport.Tf.toFixed(2)]
+            ['Presión (atm)', dataAdi.Pi.toFixed(2), dataAdi.Pf.toFixed(2)],
+            ['Volumen (L)', dataAdi.Vi.toFixed(2), dataAdi.Vf.toFixed(2)],
+            ['Temperatura (K)', dataAdi.Ti.toFixed(2), dataAdi.Tf.toFixed(2)]
           ]
         });
 
-        doc.setFontSize(11);
-        let finalY = doc.lastAutoTable.finalY + 12;
-        doc.text(Coeficiente de Expansión Adiabática (γ): ${dataAdiReport.gamma}, 20, finalY);
-        doc.text(Trabajo de Expansión/Compresión (W): ${dataAdiReport.Wv_J.toFixed(2)} J, 20, finalY + 7);
-        doc.text(Cambio neto en Energía Interna (ΔU): ${dataAdiReport.Wv_J.toFixed(2)} J, 20, finalY + 14);
-        doc.text(Calor Neto Transferido (Q): 0.00 J (Sistema Adiabático Puro), 20, finalY + 21);
+        doc.setFontSize(12);
+        let finalY = doc.lastAutoTable.finalY + 15;
+        doc.text(`Coeficiente Adiabático (γ): ${dataAdi.gamma}`, 20, finalY);
+        doc.text(`Trabajo realizado (W): ${dataAdi.Wv_J.toFixed(2)} J`, 20, finalY + 8);
+        doc.text(`Variación de Energía Interna (ΔU): ${dataAdi.Wv_J.toFixed(2)} J`, 20, finalY + 16);
+        doc.text(`Calor transferido (Q): 0 J (Proceso Adiabático)`, 20, finalY + 24);
         
-        doc.save(Reporte_Adiabatico_${nombre}.pdf);
+        doc.save(`Adiabatica_${nombre}.pdf`);
       }
     }
   </script>
