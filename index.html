@@ -8,7 +8,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   
   <style>
@@ -509,7 +508,6 @@
     document.getElementById("metal").addEventListener("change", (e) => {
       const metal = e.target.value;
       document.getElementById("c1").value = caloresEspecificos[metal] || 0;
-      // Actualiza la imagen. Si eligió "Calorimetro", muestra la base, sino la del material.
       document.getElementById("imagenCalorimetro").src = metal + ".png";
     });
 
@@ -522,19 +520,17 @@
       const Ti1 = parseFloat(document.getElementById("Ti1").value);
       
       const m2 = parseFloat(document.getElementById("m2").value);
-      const c2 = parseFloat(document.getElementById("c2").value); // Agua 4186
+      const c2 = parseFloat(document.getElementById("c2").value); 
       const Ti2 = parseFloat(document.getElementById("Ti2").value);
 
       if(c1 === 0) { alert("Por favor selecciona un material válido."); return; }
 
-      // Tf = (m1*c1*Ti1 + m2*c2*Ti2) / (m1*c1 + m2*c2)
       const Tf = (m1 * c1 * Ti1 + m2 * c2 * Ti2) / (m1 * c1 + m2 * c2);
       document.getElementById("tempEquilibrio").textContent = "Temperatura de equilibrio (Tf): " + Tf.toFixed(2) + " °C";
 
-      const deltaH1 = (m1 * c1 * (Tf - Ti1)) / 1000; // kJ
-      const deltaH2 = (m2 * c2 * (Tf - Ti2)) / 1000; // kJ
+      const deltaH1 = (m1 * c1 * (Tf - Ti1)) / 1000; 
+      const deltaH2 = (m2 * c2 * (Tf - Ti2)) / 1000; 
       
-      // Actualizar UI
       const formatCell = (val, id) => {
         const el = document.getElementById(id);
         el.textContent = val.toFixed(3) + " kJ";
@@ -550,17 +546,15 @@
 
       document.getElementById("outputSection").style.display = "block";
 
-      // Guardar para el PDF
       dataCalorimetria = { material, m1, c1, Ti1, m2, c2, Ti2, Tf, deltaH1, deltaH2 };
     });
 
     // --- LÓGICA DE TERMODINÁMICA GLOBALES ---
-    const R = 0.08206; // L·atm/(mol·K)
-    const RJ = 8.314;  // J/(mol·K)
+    const R = 0.08206; 
+    const RJ = 8.314;  
     let chartReversible, chartIrreversible, chartAdiabatica;
-    let dataIsoRev = null, dataIsoIrr = null, dataAdi = null; // Para PDF
+    let dataIsoRev = null, dataIsoIrr = null, dataAdi = null; 
 
-    // Inicializar Gráficos Chart.js
     window.onload = function() {
       const ctxRev = document.getElementById("grafica-reversible").getContext("2d");
       chartReversible = new Chart(ctxRev, { type: 'scatter', data: { datasets: [] }, options: getChartOpts('Isoterma Reversible') });
@@ -586,16 +580,13 @@
       };
     }
 
-    // Calcular posición del pistón basado en el volumen
     function volumenAPosicion(V, Vmin=1, Vmax=100) {
-      const minPx = 40, maxPx = 220; // Rangos de movimiento CSS
+      const minPx = 40, maxPx = 220; 
       const p = Math.min(Math.max((V - Vmin)/(Vmax - Vmin), 0), 1);
       return minPx + p * (maxPx - minPx);
     }
 
     // --- SIMULACIÓN ISOTÉRMICA ---
-    let isoBloqueado = false, lastIsoData = null;
-
     function toggleInputType() {
       const tipo = document.getElementById("tipo-entrada").value;
       if (tipo === "presion") {
@@ -629,21 +620,11 @@
         document.getElementById("pf").value = Pf.toFixed(3);
       }
 
-      if (isoBloqueado && lastIsoData) {
-        if(Math.abs(Pi - lastIsoData.Pi) > 0.01 || Math.abs(T - lastIsoData.T) > 0.1) {
-          alert("Para cambiar datos presiona el botón Resetear primero.");
-          return;
-        }
-      }
-
       const VmaxPlot = Math.max(Vi, Vf) * 1.5;
       const PmaxPlot = Math.max(Pi, Pf) * 1.5;
 
       ejecutarIsoReversible(n, T, Pi, Pf, Vi, Vf, VmaxPlot, PmaxPlot);
       ejecutarIsoIrreversible(n, T, Pi, Pf, Vi, Vf, VmaxPlot, PmaxPlot);
-
-      isoBloqueado = true;
-      lastIsoData = { Pi, Pf, Vi, Vf, n, T };
     }
 
     function animarCilindro(prefix, esExpansion, Vf_relativo) {
@@ -674,11 +655,10 @@
     }
 
     function ejecutarIsoReversible(n, T, Pi, Pf, Vi, Vf, VmaxP, PmaxP) {
-      const Wv = -n * R * T * Math.log(Vf / Vi); // L atm
+      const Wv = -n * R * T * Math.log(Vf / Vi); 
       const Wv_J = Wv * 101.325;
-      const Q = -Wv;
 
-      dataIsoRev = { n, T, Pi, Pf, Vi, Vf, Wv, Wv_J, Q }; // Para PDF
+      dataIsoRev = { n, T, Pi, Pf, Vi, Vf, Wv, Wv_J }; 
 
       document.getElementById("res-reversible").innerHTML = `
         <b>Trabajo (W):</b> ${Wv.toFixed(2)} L·atm (${Wv_J.toFixed(2)} J)<br>
@@ -688,7 +668,6 @@
 
       animarCilindro('reversible', Vf > Vi, volumenAPosicion(Vf, Math.min(Vi,Vf)*0.5, Math.max(Vi,Vf)*1.5));
 
-      // Graficar
       const dataIso = [], area = [];
       for(let v = Math.min(Vi, Vf)*0.5; v <= VmaxP; v+=0.5) dataIso.push({x: v, y: (n*R*T)/v});
       for(let v = Math.min(Vi, Vf); v <= Math.max(Vi, Vf); v+=0.1) area.push({x: v, y: (n*R*T)/v});
@@ -705,10 +684,10 @@
     }
 
     function ejecutarIsoIrreversible(n, T, Pi, Pf, Vi, Vf, VmaxP, PmaxP) {
-      const Wv = -Pf * (Vf - Vi); // L atm
+      const Wv = -Pf * (Vf - Vi); 
       const Wv_J = Wv * 101.325;
       
-      dataIsoIrr = { n, T, Pi, Pf, Vi, Vf, Wv, Wv_J }; // Para PDF
+      dataIsoIrr = { n, T, Pi, Pf, Vi, Vf, Wv, Wv_J }; 
 
       document.getElementById("res-irreversible").innerHTML = `
         <b>Trabajo (W):</b> ${Wv.toFixed(2)} L·atm (${Wv_J.toFixed(2)} J)<br>
@@ -729,7 +708,6 @@
     }
 
     function reiniciarIsotermico() {
-      isoBloqueado = false; lastIsoData = null;
       document.getElementById("res-reversible").innerHTML = "";
       document.getElementById("res-irreversible").innerHTML = "";
       document.getElementById("piston-reversible").style.bottom = "50px";
@@ -756,9 +734,9 @@
       const Pf = Pi * Math.pow(Vi/Vf, gamma);
       const Tf = Ti * Math.pow(Vi/Vf, gamma - 1);
 
-      const Wv = (Pf*Vf - Pi*Vi) / (gamma - 1); // L atm
+      const Wv = (Pf*Vf - Pi*Vi) / (gamma - 1); 
       const Wv_J = Wv * 101.325;
-      const dU_J = Wv_J; // Q=0 -> dU = W (usando convención W hecho SOBRE el gas)
+      const dU_J = Wv_J; 
 
       dataAdi = { gamma, n, Ti, Tf, Pi, Pf, Vi, Vf, Wv, Wv_J };
 
@@ -769,21 +747,19 @@
         <b>ΔU:</b> ${dU_J.toFixed(2)} J &nbsp;|&nbsp; <b>Q:</b> 0 J
       `;
 
-      // Animación
       document.getElementById("piston-adiabatica").style.bottom = ${volumenAPosicion(Vf, Math.min(Vi,Vf)*0.5, Math.max(Vi,Vf)*1.5)}px;
       
-      // Gráfica
-      const dataAdi = [], areaAdi = [];
+      const dataAdiCurve = [], areaAdi = [];
       const K = Pi * Math.pow(Vi, gamma);
       const VmaxP = Math.max(Vi, Vf) * 1.5;
       
-      for(let v = Math.min(Vi, Vf)*0.5; v <= VmaxP; v+=0.5) dataAdi.push({x: v, y: K/Math.pow(v, gamma)});
+      for(let v = Math.min(Vi, Vf)*0.5; v <= VmaxP; v+=0.5) dataAdiCurve.push({x: v, y: K/Math.pow(v, gamma)});
       for(let v = Math.min(Vi, Vf); v <= Math.max(Vi, Vf); v+=0.1) areaAdi.push({x: v, y: K/Math.pow(v, gamma)});
 
       chartAdiabatica.options.scales.x.max = VmaxP;
       chartAdiabatica.options.scales.y.max = Math.max(Pi, Pf) * 1.5;
       chartAdiabatica.data.datasets = [
-        { label: 'Adiabática', data: dataAdi, borderColor: '#8e44ad', type: 'line', pointRadius: 0, borderWidth: 2 },
+        { label: 'Adiabática', data: dataAdiCurve, borderColor: '#8e44ad', type: 'line', pointRadius: 0, borderWidth: 2 },
         { label: 'Trabajo', data: areaAdi, backgroundColor: 'rgba(142, 68, 173, 0.3)', fill: true, type: 'line', pointRadius: 0 },
         { label: 'Inicio', data: [{x: Vi, y: Pi}], backgroundColor: '#2ecc71', pointRadius: 6 },
         { label: 'Fin', data: [{x: Vf, y: Pf}], backgroundColor: '#e74c3c', pointRadius: 6 }
@@ -797,16 +773,15 @@
       const doc = new jsPDF();
       const nombre = document.getElementById("nombreEstudiante").value || "Estudiante";
       
-      // Cabecera común
       doc.setFontSize(18);
-      doc.setTextColor(27, 54, 93); // primary color
+      doc.setTextColor(27, 54, 93); 
       doc.text("Reporte de Laboratorio Virtual", 105, 20, { align: 'center' });
       
       doc.setFontSize(12);
       doc.setTextColor(50, 50, 50);
       doc.text(Nombre: ${nombre}, 20, 35);
       doc.text(Fecha: ${new Date().toLocaleDateString()}, 150, 35);
-      doc.line(20, 40, 190, 40); // Línea separadora
+      doc.line(20, 40, 190, 40); 
 
       if (activeTab === 'calorimetria') {
         if(!dataCalorimetria) { alert("Primero realiza un cálculo."); return; }
